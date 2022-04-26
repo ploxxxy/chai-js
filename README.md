@@ -2,8 +2,6 @@
 
 Discord fan-made bot created to interact with chai.ml chatbots
 
-[![Run on Repl.it](https://repl.it/badge/github/ploxxxy/chai-js)](https://repl.it/github/ploxxxy/chai-js) [![Remix on Glitch](https://cdn.glitch.com/2703baf2-b643-4da7-ab91-7ee2a2d00b5b%2Fremix-button.svg)](https://glitch.com/edit/#!/import/github/ploxxxy/chai-js)
-
 ## 🚧 Requirements
 - [Node.js 16.4 or newer](https://nodejs.org)
 - [Discord bot token](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)
