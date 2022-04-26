@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "discord.js": "^13.6.0",
+    "dotenv": "^16.0.0",
+    "node-fetch": "^2.6.7",
+    "ws": "^8.5.0"
+  },
+  "name": "chai-discord",
+  "version": "1.0.0",
+  "description": "Discord bot made to interact with chai.ml chatbots",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ploxxxy/chai-js.git"
+  },  
+  "main": "index.js",
+  "scripts": {
+    "start": "node ."
+  },
+  "author": "ploxxy",
+  "license": "MIT"
+}
