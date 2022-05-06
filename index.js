@@ -1,8 +1,7 @@
 const WebSocket = require('ws')
 const Discord = require('discord.js')
-const dotenv = require('dotenv')
 const fetch = require('node-fetch')
-dotenv.config()
+require('dotenv').config()
 
 const client = new Discord.Client({
     intents: [ Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES ]
@@ -10,13 +9,23 @@ const client = new Discord.Client({
 
 var bot
 var body
+var wsLink
 
-client.once('ready', async () => {
+// Have to use this abomination for now, not sure how to deal with it
+(async function() {
+    await fetch('https://raw.githubusercontent.com/ploxxxy/chai-js/main/updates.json').then(res => res.json()).then(data => {
+        wsLink = data.wsLink
+    }).catch(error => {
+        throw new Error(`Error while fetching the current link: ${error}`)
+    })
+}())
+
+client.once('ready', () => {
     
     console.log(`Loaded Discord bot: ${client.user.tag}`)
 
     try {
-        const socket = new WebSocket('wss://s-usc1b-nss-2123.firebaseio.com/.ws?v=5&ns=chai-959f8-default-rtdb')
+        const socket = new WebSocket(wsLink)
 
         socket.onopen = () => {
             socket.send(JSON.stringify({"t":"d","d":{"r":2,"a":"q","b":{"p":"/botConfigs/bots/" + process.env.CHAI_BOT_ID,"h":""}}}))
@@ -62,6 +71,9 @@ client.on('messageCreate', message => {
         "body": JSON.stringify(body),
         "method": "POST"
     }).then(res => res.json()).then(d => {
+
+            if (d.error) throw new Error(`Error with Chai app: ${d.error.message}`)
+        
             body.text += d.data
 
             message.reply({
