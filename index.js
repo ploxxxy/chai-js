@@ -62,7 +62,7 @@ client.on('messageCreate', message => {
     body.text += `\n${bot.userLabel}: ${message}\n${bot.botLabel}:`
     message.channel.sendTyping()
     
-    fetch("https://europe-west2-chai-959f8.cloudfunctions.net/gptj_v2", {
+    fetch("https://model-api-shdxwd54ta-nw.a.run.app/generate/gptj", {
         "headers": {
             "content-type": "application/json",
             "developer_key": process.env.CHAI_DEV_KEY,
