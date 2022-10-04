@@ -10,6 +10,7 @@ const client = new Discord.Client({
 var bot
 var body
 var wsLink
+var processing = false
 
 function newError(text, error) {
     return new Error(`\x1b[33m${text}: \x1b[101m${error}\x1b[0m`)
@@ -17,6 +18,7 @@ function newError(text, error) {
 
 (function () {
     const socket = new WebSocket('wss://chai-959f8-default-rtdb.firebaseio.com/.ws?v=5')
+
     try {
         socket.onopen = () => {
             socket.onmessage = (event) => {
@@ -29,7 +31,6 @@ function newError(text, error) {
 }())
 
 client.once('ready', () => {
-
     console.log(`Loaded Discord bot: ${client.user.tag}`)
 
     try {
@@ -45,15 +46,9 @@ client.once('ready', () => {
                         "text": `${bot.prompt}\n${bot.botLabel}: ${bot.firstMessage}`,
                         "temperature": bot.temperature,
                         "repetition_penalty": bot.repetitionPenalty,
-                        "model": bot.model,
                         "top_p": bot.topP,
                         "top_k": bot.topK,
-                        "response_length": bot.responseLength,
-                        "stop_sequences": [
-                            "\n",
-                            `${bot.botLabel}:`,
-                            `${bot.userLabel}:`
-                        ]
+                        "response_length": bot.responseLength
                     }
                     console.log(`Fetched bot data: ${bot.name}`)
                 }
@@ -65,9 +60,10 @@ client.once('ready', () => {
 })
 
 client.on('messageCreate', message => {
-    if (message.author.bot || message.channel.id != process.env.DISCORD_CHANNEL_ID || !bot) return
+    if (message.author.bot || message.channel.id != process.env.DISCORD_CHANNEL_ID || !bot || processing) return
 
-    body.text += `\n${bot.userLabel}: ${message}\n${bot.botLabel}:`
+    processing = true
+    body.text += `\n${bot.userLabel}: ${message.content.slice(0, 128)}\n${bot.botLabel}:`
     message.channel.sendTyping()
 
     fetch("https://model-api-shdxwd54ta-nw.a.run.app/generate/gptj", {
@@ -79,7 +75,6 @@ client.on('messageCreate', message => {
         "body": JSON.stringify(body),
         "method": "POST"
     }).then(res => res.json()).then(d => {
-
         if (d.error) throw newError('Error while fetching response', d.error.message)
 
         body.text += d.data
@@ -88,7 +83,9 @@ client.on('messageCreate', message => {
             content: d.data
         }).catch(error => {
             throw newError('Error while sending message', error)
-        })
+        }).finally(
+            processing = false
+        )
     })
 })
 
