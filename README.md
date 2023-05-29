@@ -1,3 +1,7 @@
+# Chai made a big change to their structure and there's no way to run this bot as of May 29, 2023. They now have an official API and a Python library to interact with their platform, find more info [here](https://chai-research.com/signup.html)
+
+---
+
 # ChaiJS
 
 Discord fan-made bot created to interact with chai.ml chatbots
